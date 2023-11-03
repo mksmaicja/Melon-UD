@@ -1,0 +1,54 @@
+name: Bug Report
+description: File a bug or crash report
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        In order to make the process easier, please take a few minutes to fill this out
+  - type: checkboxes
+    id: requiredcriteria
+    attributes:
+      label: All of the following criteria must be met
+      description: Please take the time to check each critera is met properly.
+      options:
+        - label: All <a href="https://github.com/LavaGang/MelonLoader/blob/master/README.md#requirements">Requirements</a> must be installed.
+          required: true
+        - label: "Changed the title so that it doesn't just says \"[Bug]: \""
+          required: true
+        - label: I have searched the GitHub issues for my bug, even in the closed issues.
+          required: true
+
+  - type: checkboxes
+    id: optionalcriteria
+    attributes:
+      label: All of the following are optional to answer
+      options:
+        - label: Tried reinstalling the Game.
+        - label: Tried reinstalling MelonLoader.
+        - label: Tried restarting PC.
+        - label: Was able to see the Start Screen.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Describe the issue.
+      placeholder: Use this space to describe the issue you are having.
+      description: If you have a `Latest.log` file at `{Game_Directory}\MelonLoader\Latest.log`, please attach it by dragging and dropping it into the text box, or clicking the "Attach file" button at the bottom.
+
+        If there is no `Latest.log` file, please state that you do not have one.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: attachedlog
+    validations:
+      required: true
+    attributes:
+      label: Did you attach your log file?
+      options:
+        - Select an option below
+        - Yes, I attached my log file to the text box above.
+        - No, I could not find a log file at `{Game_Directory}\MelonLoader\Latest.log`
+      default: 0
