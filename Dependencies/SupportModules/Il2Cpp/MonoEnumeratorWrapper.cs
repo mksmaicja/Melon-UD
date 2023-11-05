@@ -1,17 +1,13 @@
-using Il2CppInterop.Runtime.Injection;
 using System;
 using System.Collections;
+using UnhollowerRuntimeLib;
 
 namespace MelonLoader.Support
 {
     internal class MonoEnumeratorWrapper : Il2CppSystem.Object /*, IEnumerator */
     {
         public unsafe static void Register()
-            => ClassInjector.RegisterTypeInIl2Cpp<MonoEnumeratorWrapper>(new()
-            {
-                LogSuccess = true,
-                Interfaces = new Type[] { typeof(Il2CppSystem.Collections.IEnumerator) }
-            });
+            => ClassInjector.RegisterTypeInIl2CppWithInterfaces<MonoEnumeratorWrapper>(true, typeof(Il2CppSystem.Collections.IEnumerator));
 
         private readonly IEnumerator enumerator;
         public MonoEnumeratorWrapper(IntPtr ptr) : base(ptr) { }
@@ -32,24 +28,7 @@ namespace MelonLoader.Support
                 };
         }
 
-        public bool MoveNext()
-        {
-            try
-            {
-                return enumerator.MoveNext();
-            } catch(Exception e)
-            {
-                var melon = MelonUtils.GetMelonFromStackTrace(new System.Diagnostics.StackTrace(e), true);
-
-                if (melon != null)
-                    melon.LoggerInstance.Error("Unhandled exception in coroutine. It will not continue executing.", e);
-                else
-                    MelonLogger.Error("[Error: Could not identify source] Unhandled exception in coroutine. It will not continue executing.", e);
-
-                return false;
-            }
-        }
-        
+        public bool MoveNext() => enumerator.MoveNext();
         public void Reset() => enumerator.Reset();
     }
 }

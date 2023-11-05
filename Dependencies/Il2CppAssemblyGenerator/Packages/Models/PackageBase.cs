@@ -37,7 +37,7 @@ namespace MelonLoader.Il2CppAssemblyGenerator.Packages.Models
             }
 
             Core.Logger.Msg($"Processing {Name}...");
-            if (!FileHandler.Process(FilePath, Destination, MelonUtils.IsWindows ? null : Name))
+            if (!FileHandler.Process(FilePath, Destination))
             {
                 ThrowInternalFailure($"Failed to Process {Name}!");
                 return false;
@@ -53,7 +53,8 @@ namespace MelonLoader.Il2CppAssemblyGenerator.Packages.Models
             configPref = Version;
             Config.Save();
         }
-        
-        internal static void ThrowInternalFailure(string txt) => MelonLogger.ThrowInternalFailure(txt);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern static void ThrowInternalFailure(string txt);
     }
 }

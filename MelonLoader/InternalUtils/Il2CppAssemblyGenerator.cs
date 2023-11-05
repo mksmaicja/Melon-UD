@@ -3,39 +3,36 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using MelonLoader.Utils;
 
 namespace MelonLoader.InternalUtils
 {
     internal static class Il2CppAssemblyGenerator
     {
         public static readonly MelonModule.Info moduleInfo = new MelonModule.Info(
-            $"maicjaload{Path.DirectorySeparatorChar}Dependencies{Path.DirectorySeparatorChar}Il2CppAssemblyGenerator{Path.DirectorySeparatorChar}Il2CppAssemblyGenerator.dll"
+            $"MelonLoader{Path.DirectorySeparatorChar}Dependencies{Path.DirectorySeparatorChar}Il2CppAssemblyGenerator{Path.DirectorySeparatorChar}Il2CppAssemblyGenerator.dll"
             , () => !MelonUtils.IsGameIl2Cpp());
 
         internal static bool Run()
         {
             var module = MelonModule.Load(moduleInfo);
             if (module == null)
-            {
-                MelonLogger.MsgDirect("NULL MODULE");
                 return true;
-            }
 
-            MelonLogger.MsgDirect("Loading Il2CppAssemblyGenerator...");
-            if (MelonUtils.IsWindows)
-            {
-                IntPtr windowHandle = Process.GetCurrentProcess().MainWindowHandle;
-                BootstrapInterop.DisableCloseButton(windowHandle);
-            }
+            MelonLogger.Msg("Loading Il2CppAssemblyGenerator...");
+
+            MonoInternals.MonoResolveManager.GetAssemblyResolveInfo("Il2CppAssemblyGenerator").Override = module.Assembly;
+
+            IntPtr windowHandle = Process.GetCurrentProcess().MainWindowHandle;
+            DisableCloseButton(windowHandle);
             var ret = module.SendMessage("Run");
-            
-            if (MelonUtils.IsWindows)
-            {
-                IntPtr windowHandle = Process.GetCurrentProcess().MainWindowHandle;
-                BootstrapInterop.EnableCloseButton(windowHandle);
-            }
-            return ret is 0;
+            EnableCloseButton(windowHandle);
+            MelonUtils.SetCurrentDomainBaseDirectory(MelonUtils.GameDirectory);
+            return ret is int retVal && retVal == 0;
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void EnableCloseButton(IntPtr mainWindow);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void DisableCloseButton(IntPtr mainWindow);
     }
 }

@@ -17,9 +17,6 @@
 		<DefineConstants />
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="Resources\System.Drawing.dll" />
-	</ItemGroup>
-	<ItemGroup>
 		<Compile Include="..\..\..\MelonLoader\Properties\BuildInfo.cs" Link="Properties\BuildInfo.cs" />
 			<Compile Update="Properties\Resources.Designer.cs">
 			<AutoGen>True</AutoGen>
@@ -30,6 +27,5 @@
 	<ItemGroup>
 		<Content Include="Resources\System.Core.dll" />
 		<Content Include="Resources\System.dll" />
-		<Content Include="Resources\System.Drawing.dll" />
 	</ItemGroup>
 </Project>

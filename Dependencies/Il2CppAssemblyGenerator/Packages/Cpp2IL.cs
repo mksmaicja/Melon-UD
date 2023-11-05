@@ -7,8 +7,6 @@ namespace MelonLoader.Il2CppAssemblyGenerator.Packages
 {
     internal class Cpp2IL : Models.ExecutablePackage
     {
-        private static string ReleaseName =>
-            MelonUtils.IsWindows ? "Windows-Netframework472" : MelonUtils.IsUnix ? "Linux" : "OSX";
         internal Cpp2IL()
         {
             Version = MelonLaunchOptions.Il2CppAssemblyGenerator.ForceVersion_Dumper;
@@ -17,24 +15,14 @@ namespace MelonLoader.Il2CppAssemblyGenerator.Packages
                 Version = RemoteAPI.Info.ForceDumperVersion;
 #endif
             if (string.IsNullOrEmpty(Version) || Version.Equals("0.0.0.0"))
-                Version = "2022.1.0-pre-release.10";
+                Version = "2022.1.0-pre-release.8";
 
             Name = nameof(Cpp2IL);
             Destination = Path.Combine(Core.BasePath, Name);
             OutputFolder = Path.Combine(Destination, "cpp2il_out");
-
-            URL = $"https://github.com/SamboyCoding/{Name}/releases/download/{Version}/{Name}-{Version}-{ReleaseName}.zip";
-
+            URL = $"https://github.com/SamboyCoding/{Name}/releases/download/{Version}/{Name}-{Version}-Windows-Netframework472.zip";
             ExeFilePath = Path.Combine(Destination, $"{Name}.exe");
-            
             FilePath = Path.Combine(Core.BasePath, $"{Name}_{Version}.zip");
-
-            if (MelonUtils.IsWindows) 
-                return;
-            
-            URL = URL.Replace(".zip", "");
-            ExeFilePath = ExeFilePath.Replace(".exe", "");
-            FilePath = FilePath.Replace(".zip", "");
         }
 
         internal override bool ShouldSetup() 
@@ -61,6 +49,7 @@ namespace MelonLoader.Il2CppAssemblyGenerator.Packages
                 "\"" + Path.GetDirectoryName(Core.GameAssemblyPath) + "\"",
                 "--exe-name",
                 "\"" + Process.GetCurrentProcess().ProcessName + "\"",
+
                 "--use-processor",
                 "attributeinjector",
                 "--output-as",

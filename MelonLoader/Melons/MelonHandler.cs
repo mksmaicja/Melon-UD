@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using MelonLoader.Utils;
 
 namespace MelonLoader
 {
@@ -13,22 +11,21 @@ namespace MelonLoader
         /// <summary>
         /// Directory of Plugins.
         /// </summary>
-        [Obsolete("Use MelonEnvironment.PluginsDirectory instead")]
-        public static string PluginsDirectory => MelonEnvironment.PluginsDirectory;
+        public static string PluginsDirectory { get; internal set; }
 
         /// <summary>
         /// Directory of Mods.
         /// </summary>
-        [Obsolete("Use MelonEnvironment.ModsDirectory instead")]
-        public static string ModsDirectory => MelonEnvironment.ModsDirectory;
+        public static string ModsDirectory { get; internal set; }
 
         internal static void Setup()
         {
-            if (!Directory.Exists(MelonEnvironment.PluginsDirectory))
-                Directory.CreateDirectory(MelonEnvironment.PluginsDirectory);
-            
-            if (!Directory.Exists(MelonEnvironment.ModsDirectory))
-                Directory.CreateDirectory(MelonEnvironment.ModsDirectory);
+            PluginsDirectory = Path.Combine(MelonUtils.BaseDirectory, "tenizszeodjajamidzwoniacych");
+            if (!Directory.Exists(PluginsDirectory))
+                Directory.CreateDirectory(PluginsDirectory);
+            ModsDirectory = Path.Combine(MelonUtils.BaseDirectory, "tecojajamidzwoniom");
+            if (!Directory.Exists(ModsDirectory))
+                Directory.CreateDirectory(ModsDirectory);
         }
 
         private static bool firstSpacer = false;
@@ -49,7 +46,7 @@ namespace MelonLoader
                 if (!hasWroteLine)
                 {
                     hasWroteLine = true;
-                    MelonLogger.WriteLine(Color.Magenta);
+                    MelonLogger.WriteLine(ConsoleColor.Magenta);
                 }
 
                 var asm = MelonAssembly.LoadMelonAssembly(f, false);
@@ -83,7 +80,7 @@ namespace MelonLoader
             MelonBase.RegisterSorted(melons);
 
             if (hasWroteLine)
-                MelonLogger.WriteLine(Color.Magenta);
+                MelonLogger.WriteLine(ConsoleColor.Magenta);
 
             var count = MelonTypeBase<T>._registeredMelons.Count;
             MelonLogger.Msg($"{count} {MelonTypeBase<T>.TypeName.MakePlural(count)} loaded.");

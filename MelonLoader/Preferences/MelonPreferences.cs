@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using MelonLoader.Preferences;
-using MelonLoader.Utils;
 using Tomlet.Exceptions;
 
 namespace MelonLoader
@@ -33,8 +32,8 @@ namespace MelonLoader
         internal static Preferences.IO.File DefaultFile = null;
 
         static MelonPreferences() => DefaultFile = new Preferences.IO.File(
-            Path.Combine(MelonEnvironment.UserDataDirectory, "MelonPreferences.cfg"),
-            Path.Combine(MelonEnvironment.UserDataDirectory, "modprefs.ini"));
+            Path.Combine(MelonUtils.UserDataDirectory, "MelonPreferences.cfg"),
+            Path.Combine(MelonUtils.UserDataDirectory, "modprefs.ini"));
 
         public static void Load()
         {
@@ -353,7 +352,7 @@ namespace MelonLoader
                 }
 
             if (printmsg)
-                MelonLogger.MsgDirect($"MelonPreferences Loaded from {file.FilePath}");
+                MelonLogger.Msg($"MelonPreferences Loaded from {file.FilePath}");
 
             OnPreferencesLoaded.Invoke(file.FilePath);
         }

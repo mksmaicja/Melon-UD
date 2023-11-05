@@ -12,6 +12,6 @@
         void OnGUI();
         void Quit();
         void DefiniteQuit();
-        void SetInteropSupportInterface(InteropSupport.Interface interop);
+        void SetUnhollowerSupportInterface(UnhollowerSupport.Interface unhollower);
     }
 }

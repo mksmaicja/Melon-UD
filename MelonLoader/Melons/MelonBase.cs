@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,7 +35,7 @@ namespace MelonLoader
         /// <summary>
         /// Creates a new Melon instance for a Wrapper.
         /// </summary>
-        public static T CreateWrapper<T>(string name, string author, string version, MelonGameAttribute[] games = null, MelonProcessAttribute[] processes = null, int priority = 0, Color? color = null, Color? authorColor = null, string id = null) where T : MelonBase, new()
+        public static T CreateWrapper<T>(string name, string author, string version, MelonGameAttribute[] games = null, MelonProcessAttribute[] processes = null, int priority = 0, ConsoleColor? color = null, ConsoleColor? authorColor = null, string id = null) where T : MelonBase, new()
         {
             var melon = new T
             {
@@ -99,22 +98,17 @@ namespace MelonLoader
         /// <summary>
         /// Console Color of the Melon.
         /// </summary>
-        public Color ConsoleColor { get; internal set; }
+        public ConsoleColor ConsoleColor { get; internal set; }
 
         /// <summary>
         /// Console Color of the Author that made this melon.
         /// </summary>
-        public Color AuthorConsoleColor { get; internal set; }
+        public ConsoleColor AuthorConsoleColor { get; internal set; }
 
         /// <summary>
         /// Info Attribute of the Melon.
         /// </summary>
         public MelonInfoAttribute Info { get; internal set; }
-
-        /// <summary>
-        /// AdditionalCredits Attribute of the Melon
-        /// </summary>
-        public MelonAdditionalCreditsAttribute AdditionalCredits { get; internal set; }
 
         /// <summary>
         /// Process Attributes of the Melon.
@@ -313,53 +307,53 @@ namespace MelonLoader
             if (incompatibilities == null || incompatibilities.Length == 0)
                 return;
 
-            MelonLogger.WriteLine(Color.Red);
-            MelonLogger.MsgDirect(Color.DarkRed, $"'{melon.Info.Name} v{melon.Info.Version}' is incompatible:");
+            MelonLogger.WriteLine(ConsoleColor.Red);
+            MelonLogger.Msg(ConsoleColor.DarkRed, $"'{melon.Info.Name} v{melon.Info.Version}' is incompatible:");
             if (incompatibilities.Contains(Incompatibility.Game))
             {
-                MelonLogger.MsgDirect($"- {melon.Info.Name} is only compatible with the following Games:");
+                MelonLogger.Msg($"- {melon.Info.Name} is only compatible with the following Games:");
 
                 foreach (var g in melon.Games)
-                    MelonLogger.MsgDirect($"    - '{g.Name}' by {g.Developer}");
+                    MelonLogger.Msg($"    - '{g.Name}' by {g.Developer}");
             }
             if (incompatibilities.Contains(Incompatibility.GameVersion))
             {
-                MelonLogger.MsgDirect($"- {melon.Info.Name} is only compatible with the following Game Versions:");
+                MelonLogger.Msg($"- {melon.Info.Name} is only compatible with the following Game Versions:");
 
                 foreach (var g in melon.SupportedGameVersions)
-                    MelonLogger.MsgDirect($"    - {g.Version}");
+                    MelonLogger.Msg($"    - {g.Version}");
             }
             if (incompatibilities.Contains(Incompatibility.ProcessName))
             {
-                MelonLogger.MsgDirect($"- {melon.Info.Name} is only compatible with the following Process Names:");
+                MelonLogger.Msg($"- {melon.Info.Name} is only compatible with the following Process Names:");
 
                 foreach (var p in melon.SupportedProcesses)
-                    MelonLogger.MsgDirect($"    - '{p.EXE_Name}'");
+                    MelonLogger.Msg($"    - '{p.EXE_Name}'");
             }
             if (incompatibilities.Contains(Incompatibility.Platform))
             {
-                MelonLogger.MsgDirect($"- {melon.Info.Name} is only compatible with the following Platforms:");
+                MelonLogger.Msg($"- {melon.Info.Name} is only compatible with the following Platforms:");
 
                 foreach (var p in melon.SupportedPlatforms.Platforms)
-                    MelonLogger.MsgDirect($"    - {p}");
+                    MelonLogger.Msg($"    - {p}");
             }
             if (incompatibilities.Contains(Incompatibility.Domain))
             {
-                MelonLogger.MsgDirect($"- {melon.Info.Name} is only compatible with the following Domain:");
-                MelonLogger.MsgDirect($"    - {melon.SupportedDomain.Domain}");
+                MelonLogger.Msg($"- {melon.Info.Name} is only compatible with the following Domain:");
+                MelonLogger.Msg($"    - {melon.SupportedDomain.Domain}");
             }
             if (incompatibilities.Contains(Incompatibility.MLVersion))
             {
-                MelonLogger.MsgDirect($"- {melon.Info.Name}  is only compatible with the following MelonLoader Versions:");
-                MelonLogger.MsgDirect($"    - {melon.SupportedMLVersion.SemVer}{(melon.SupportedMLVersion.IsMinimum ? " or higher" : "")}");
+                MelonLogger.Msg($"- {melon.Info.Name}  is only compatible with the following MelonLoader Versions:");
+                MelonLogger.Msg($"    - {melon.SupportedMLVersion.SemVer}{(melon.SupportedMLVersion.IsMinimum ? " or higher" : "")}");
             }
             if (incompatibilities.Contains(Incompatibility.MLBuild))
             {
-                MelonLogger.MsgDirect($"- {melon.Info.Name} is only compatible with the following MelonLoader Build Hash Codes:");
-                MelonLogger.MsgDirect($"    - {melon.SupportedMLBuild.HashCode}");
+                MelonLogger.Msg($"- {melon.Info.Name} is only compatible with the following MelonLoader Build Hash Codes:");
+                MelonLogger.Msg($"    - {melon.SupportedMLBuild.HashCode}");
             }
 
-            MelonLogger.WriteLine(Color.Red);
+            MelonLogger.WriteLine(ConsoleColor.Red);
             MelonLogger.WriteSpacer();
         }
 
@@ -528,28 +522,28 @@ namespace MelonLoader
 
         private void PrintLoadInfo()
         {
-            MelonLogger.WriteLine(Color.DarkGreen);
+            MelonLogger.WriteLine(ConsoleColor.DarkGreen);
             
-            MelonLogger.Internal_PrintModName(ConsoleColor, AuthorConsoleColor, Info.Name, Info.Author, AdditionalCredits?.Credits, Info.Version, ID);
-            MelonLogger.MsgDirect(Color.DarkGray, $"Assembly: {Path.GetFileName(MelonAssembly.Location)}");
+            MelonLogger.Internal_PrintModName(ConsoleColor, AuthorConsoleColor, Info.Name, Info.Author, Info.Version, ID);
+            MelonLogger.Msg(ConsoleColor.DarkGray, $"Assembly: {Path.GetFileName(MelonAssembly.Location)}");
 
-            MelonLogger.WriteLine(Color.DarkGreen);
+            MelonLogger.WriteLine(ConsoleColor.DarkGreen);
         }
 
         private void PrintUnloadInfo(string reason)
         {
-            MelonLogger.WriteLine(Color.DarkRed);
+            MelonLogger.WriteLine(ConsoleColor.DarkRed);
 
-            MelonLogger.MsgDirect(Color.DarkGray, MelonTypeName + " deinitialized:");
-            MelonLogger.Internal_PrintModName(ConsoleColor, AuthorConsoleColor, Info.Name, Info.Author, AdditionalCredits?.Credits, Info.Version, ID);
+            MelonLogger.Msg(ConsoleColor.DarkGray, MelonTypeName + " deinitialized:");
+            MelonLogger.Internal_PrintModName(ConsoleColor, AuthorConsoleColor, Info.Name, Info.Author, Info.Version, ID);
 
             if (!string.IsNullOrEmpty(reason))
             {
-                MelonLogger.MsgDirect(string.Empty);
-                MelonLogger.MsgDirect($"Reason: '{reason}'");
+                MelonLogger.Msg(string.Empty);
+                MelonLogger.Msg($"Reason: '{reason}'");
             }
 
-            MelonLogger.WriteLine(Color.DarkRed);
+            MelonLogger.WriteLine(ConsoleColor.DarkRed);
         }
 
         public static void ExecuteAll(LemonAction<MelonBase> func, bool unregisterOnFail = false, string unregistrationReason = null)

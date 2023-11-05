@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle(MelonLoader
-    .BuildInfo.Description)]
+[assembly: AssemblyTitle(MelonLoader.BuildInfo.Description)]
 [assembly: AssemblyDescription(MelonLoader.BuildInfo.Description)]
 [assembly: AssemblyCompany(MelonLoader.BuildInfo.Company)]
 [assembly: AssemblyProduct(MelonLoader.BuildInfo.Name)]

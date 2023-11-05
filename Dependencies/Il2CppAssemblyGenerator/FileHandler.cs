@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using MelonLoader.Lemons.Cryptography;
 
 namespace MelonLoader.Il2CppAssemblyGenerator
@@ -45,7 +44,7 @@ namespace MelonLoader.Il2CppAssemblyGenerator
             return true;
         }
 
-        internal static bool Process(string filepath, string destination, string targetName = null)
+        internal static bool Process(string filepath, string destination)
         {
             if (string.IsNullOrEmpty(filepath))
             {
@@ -97,10 +96,6 @@ namespace MelonLoader.Il2CppAssemblyGenerator
             if (!filename.EndsWith(".zip"))
             {
                 Core.Logger.Msg($"Moving {filepath} to {destination}");
-                
-                if (!string.IsNullOrEmpty(targetName))
-                    destination = Path.Combine(destination, targetName);
-                
                 File.Move(filepath, destination);
                 return true;
             }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using MelonLoader.Lemons.Cryptography;
 
@@ -33,7 +32,7 @@ namespace MelonLoader.Il2CppAssemblyGenerator.Packages
                 foreach (byte b in hash)
                     hashstrb.Append(b.ToString("x2"));
                 string hashstr = hashstrb.ToString();
-                if (!hashstr.Equals(Version, StringComparison.OrdinalIgnoreCase))
+                if (!hashstr.Equals(Version))
                     return true;
             }
             return false;

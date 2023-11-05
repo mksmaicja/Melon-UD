@@ -79,14 +79,5 @@ namespace MelonLoader.Support.Properties {
                 return ((byte[])(obj));
             }
         }
-
-        internal static byte[] System_Drawing
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("System_Drawing", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

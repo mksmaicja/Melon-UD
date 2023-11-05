@@ -8,24 +8,15 @@ using System;
 
 namespace MelonLoader.MelonStartScreen
 {
-    internal abstract class UI_Theme
+    internal class UI_Theme
     {
         internal static UI_Theme Instance;
-
-        private static string[] includedThemeIDs =
-        {
-            "Default",
-            "Random",
-            "Pumpkin"
-        };
-        internal static bool IsIncludedThemeID() { foreach (var id in includedThemeIDs) if (id.Equals(ThemeID)) return true; return false; }
-        internal static string ThemeID = includedThemeIDs[0];
 
         internal static string FilePath;
         internal static string ThemePath;
         internal static cGeneral General;
         internal static bool IsLemon;
-        internal static bool IsPumpkin;
+        internal static bool IsHalloween;
 
         internal cBackground Background;
         internal ImageSettings LogoImage;
@@ -57,68 +48,60 @@ namespace MelonLoader.MelonStartScreen
             FilePath = Path.Combine(Core.FolderPath, "Config.cfg");
             General = CreateCat<cGeneral>(FilePath, nameof(General));
 
-            if (!string.IsNullOrEmpty(General.Theme))
-                ThemeID = General.Theme
-                    .Replace("\\", "")
-                    .Replace("/", "");
-
-            if (ThemeID == "Halloween")
-                General.Theme = ThemeID = includedThemeIDs[0];
-
-            bool isIncludedID = IsIncludedThemeID();
-
-            if (ThemeID.Equals(includedThemeIDs[1]))
-                ThemePath = UI_Utils.RandomFolder(Core.ThemesFolderPath);
-            else
-                ThemePath = Path.Combine(Core.ThemesFolderPath, ThemeID);
-
-            if (!isIncludedID && !Directory.Exists(ThemePath))
+            bool UseDefault = true;
+            if (!string.IsNullOrEmpty(General.Theme)
+                && !General.Theme.Equals("Default")
+                && !General.Theme.Equals("Random")
+                && !General.Theme.Equals("Halloween"))
             {
-                Core.Logger.Error($"Failed to find Start Screen Theme: {ThemeID}");
+                try
+                {
+                    // To-Do: Sanatize themeName
+                    General.Theme = General.Theme
+                        .Replace("\\", "")
+                        .Replace("/", "");
 
-                isIncludedID = true;
-                General.Theme = ThemeID = includedThemeIDs[0];
-                ThemePath = Path.Combine(Core.ThemesFolderPath, ThemeID);
+                    ThemePath = Path.Combine(Core.ThemesFolderPath, General.Theme);
+                    if (Directory.Exists(ThemePath))
+                        UseDefault = false;
+                    else
+                        throw new DirectoryNotFoundException(ThemePath);
+                }
+                catch (Exception ex) { Core.Logger.Error($"Failed to find Start Screen Theme: {ex}"); }
             }
 
-            if (isIncludedID && !ThemeID.Equals(includedThemeIDs[1]))
+            if (General.Theme.Equals("Random"))
             {
-                // Lemon
-                IsLemon = (MelonLaunchOptions.Console.Mode == MelonLaunchOptions.Console.DisplayMode.LEMON);
+                ThemePath = UI_Utils.RandomFolder(Core.ThemesFolderPath);
+                UseDefault = false;
+            }
+
+            IsLemon = (MelonLaunchOptions.Console.Mode == MelonLaunchOptions.Console.DisplayMode.LEMON);
+            if (UseDefault)
+            {
                 if (!IsLemon)
                 {
-                    // Pumpkin
-                    IsPumpkin = ThemeID.Equals(includedThemeIDs[2]);
+                    IsHalloween = General.Theme.Equals("Halloween");
                     var nowTime = DateTime.Now;
                     if ((nowTime.Month == 10)
                         && (nowTime.Day == 31))
-                        IsPumpkin = true;
+                        IsHalloween = true;
                 }
 
-                ThemeID = "Default";
-                ThemePath = Path.Combine(Core.ThemesFolderPath, ThemeID);
+                General.Theme = IsHalloween ? "Halloween" : "Default";
+                ThemePath = Path.Combine(Core.ThemesFolderPath, General.Theme);
+                if (!Directory.Exists(ThemePath))
+                    Directory.CreateDirectory(ThemePath);
             }
 
-            if (!Directory.Exists(ThemePath))
-                Directory.CreateDirectory(ThemePath);
+            MelonPreferences.SaveCategory<cGeneral>(nameof(General), false);
+            Core.Logger.Msg($"Using Start Screen Theme: \"{General.Theme}\"");
 
-            if (isIncludedID)
-                MelonPreferences.SaveCategory<cGeneral>(nameof(General), false);
-
-            string themeName = (
-                IsPumpkin ? "Pumpkin"
-                : (IsLemon ? "Lemon" : ThemeID));
-
-            Core.Logger.Msg($"Using Start Screen Theme: \"{themeName}\"");
-
-            Instance =
-                IsPumpkin ? new UI.Themes.UI_Theme_Pumpkin()
-                : (IsLemon ? new UI.Themes.UI_Theme_Lemon() 
-                : new UI.Themes.UI_Theme_Default());
+            if (IsHalloween)
+                Instance = new UI.Themes.UI_Theme_Halloween();
+            else
+                Instance = new UI.Themes.UI_Theme_Default();
         }
-
-        internal abstract byte[] GetLogoImage();
-        internal abstract byte[] GetLoadingImage();
 
         internal static T CreateCat<T>(string name, bool shouldRemoveOld = false) where T : new() => CreateCat<T>(Path.Combine(ThemePath, $"{name}.cfg"), name, shouldRemoveOld);
         internal static T CreateCat<T>(string filePath, string name, bool shouldRemoveOld = false) where T : new()
@@ -179,12 +162,11 @@ namespace MelonLoader.MelonStartScreen
 
         internal class VersionTextSettings : TextSettings
         {
-            internal bool Is_ALPHA_PreRelease = false;
             public VersionTextSettings() => Defaults();
             public void Defaults()
             {
                 if (Text == null)
-                    Text = $"<loaderName/> v<loaderVersion/> {(Is_ALPHA_PreRelease ? "ALPHA Pre-Release" : "Open-Beta")}";
+                    Text = $"<loaderName/> v<loaderVersion/> Open-Beta";
                 TextSize = 24;
                 Anchor = UI_Anchor.MiddleCenter;
                 ScreenAnchor = UI_Anchor.MiddleCenter;

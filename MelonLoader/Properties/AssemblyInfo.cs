@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle(MelonLoader.BuildInfo.Description)]
@@ -12,9 +11,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion(MelonLoader.BuildInfo.Version)]
 [assembly: AssemblyFileVersion(MelonLoader.BuildInfo.Version)]
 [assembly: MelonLoader.PatchShield]
-
-[assembly: InternalsVisibleTo("MelonLoader.NativeHost")]
-[assembly: InternalsVisibleTo("Il2CppAssemblyGenerator")]
-[assembly: InternalsVisibleTo("Il2CppUnityTls")]
-[assembly: InternalsVisibleTo("Il2Cpp")]
-[assembly: InternalsVisibleTo("MelonStartScreen")] 
