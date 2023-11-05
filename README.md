@@ -6,9 +6,13 @@ Unity Explorer for this version of melon: https://github.com/mikusgszyp/Unity-Ex
 # Folder names:
 
 MelonLoader - maicjaload
+
 Mods - tecojajamidzwoniom
+
 Plugins - tenizszeodjajamidzwoniacych
+
 UserLibs - bibliotekiuzytkownikow
+
 UserData - daneuzytkownikow
 
 
